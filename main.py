@@ -11,7 +11,6 @@ from httpx import AsyncClient
 
 URL_PRODUCT = "https://app.retailed.io/api/v1/scraper/goat/product"
 URL_PRICES = "https://app.retailed.io/api/v1/scraper/goat/prices"
-API_KEY = "51a6f3d9-0173-4ebe-a66f-55f197b91ef9"
 PHOTO_INDEX = [0, 3, 5, 7, 8, 9]
 
 async_client = httpx.AsyncClient()
@@ -93,7 +92,9 @@ async def parse_api(product_url, prices_url, headers, product_query):
                     "Колекція": product_json.get("silhouette"),
                     "Тип": product_json.get("productType"),
                     "Колір": product_json.get("color"),
-                    "Дата релізу": datetime.fromisoformat(product_json.get("releaseDate")[:-1]).strftime("%d.%m.%Y")
+                    "Дата релізу": (
+                        datetime.fromisoformat(product_json.get("releaseDate")[:-1]).strftime("%d.%m.%Y"),
+                    )
                 }
 
                 total_count_squ = 0
