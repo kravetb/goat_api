@@ -15,7 +15,9 @@ load_dotenv()
 
 URL_PRODUCT = "https://app.retailed.io/api/v1/scraper/goat/product"
 URL_PRICES = "https://app.retailed.io/api/v1/scraper/goat/prices"
+
 API_KEY = os.getenv("API_KEY")
+
 PHOTO_INDEX = [0, 3, 5, 7, 8, 9]
 
 async_client = httpx.AsyncClient()
