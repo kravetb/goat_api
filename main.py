@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import httpx
@@ -6,12 +7,15 @@ import pandas as pd
 import copy
 import time
 
+from dotenv import load_dotenv
 from httpcore import TimeoutException
 from httpx import AsyncClient
 
+load_dotenv()
+
 URL_PRODUCT = "https://app.retailed.io/api/v1/scraper/goat/product"
 URL_PRICES = "https://app.retailed.io/api/v1/scraper/goat/prices"
-API_KEY = "51a6f3d9-0173-4ebe-a66f-55f197b91ef9"
+API_KEY = os.getenv("API_KEY")
 PHOTO_INDEX = [0, 3, 5, 7, 8, 9]
 
 async_client = httpx.AsyncClient()
@@ -38,7 +42,7 @@ async def get_product_from_goat(client: AsyncClient, url: str, headers, query, r
 
 async def get_photo(photo_list: list, photo_index: list) -> str:
     if photo_list:
-        res = [photo_list[2]["mainPictureUrl"]]
+        res = [photo_list[2]["mainPictureUrl"]] if len(photo_list) else [photo_list[0]["mainPictureUrl"]]
         for i in range(len(photo_list)):
             if i in photo_index:
                 res.append(photo_list[i]["mainPictureUrl"])
@@ -93,7 +97,10 @@ async def parse_api(product_url, prices_url, headers, product_query):
                     "Колекція": product_json.get("silhouette"),
                     "Тип": product_json.get("productType"),
                     "Колір": product_json.get("color"),
-                    "Дата релізу": datetime.fromisoformat(product_json.get("releaseDate")[:-1]).strftime("%d.%m.%Y")
+                    "Дата релізу": (
+                        datetime.fromisoformat(product_json.get("releaseDate")[:-1]).strftime("%d.%m.%Y")
+                        if product_json.get("releaseDate") else "Намає інформації"
+                    )
                 }
 
                 total_count_squ = 0
